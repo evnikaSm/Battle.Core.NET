@@ -1,0 +1,139 @@
+﻿@page
+@model Battle.Web.Pages.IndexModel
+@using Battle.Core
+
+@{
+    ViewData["Title"] = "God of War Ragnarök";
+}
+
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold">God of War Ragnarök</h1>
+        <p class="lead">System postaci i umiejętności — ASP.NET Core Razor Pages</p>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var w in Model.Druzyna)
+        {
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h4 class="card-title">@w.Imię</h4>
+                        <p class="text-muted mb-2">@w.GetType().Name</p>
+                        <p class="card-text">@w.ToString()</p>
+
+                        @if (w is Kratos kratos)
+                        {
+                            <div class="small text-danger mb-2">Gniew: @kratos.Gniew</div>
+                        }
+                        else if (w is Atreus atreus)
+                        {
+                            <div class="small text-primary mb-2">Strzały: @atreus.Strzały</div>
+                        }
+                        else if (w is Freya freya)
+                        {
+                            <div class="small text-success mb-2">Magia: @freya.Magia</div>
+                        }
+
+                        <div class="d-grid gap-2">
+                            <form method="post" asp-page-handler="Action">
+                                <input type="hidden" name="actionType" value="atak" />
+                                <input type="hidden" name="characterName" value="@w.Imię" />
+                                <button type="submit" class="btn btn-primary">Atakuj</button>
+                            </form>
+
+                            <form method="post" asp-page-handler="Action">
+                                <input type="hidden" name="actionType" value="specjalna" />
+                                <input type="hidden" name="characterName" value="@w.Imię" />
+                                <button type="submit" class="btn btn-warning">Specjalna umiejętność</button>
+                            </form>
+
+                            <form method="post" asp-page-handler="Action">
+                                <input type="hidden" name="actionType" value="identyfikuj" />
+                                <input type="hidden" name="characterName" value="@w.Imię" />
+                                <button type="submit" class="btn btn-secondary">Identyfikuj</button>
+                            </form>
+
+                            @if (w is Kratos)
+                            {
+                                <form method="post" asp-page-handler="Action">
+                                    <input type="hidden" name="actionType" value="sekret" />
+                                    <input type="hidden" name="characterName" value="@w.Imię" />
+                                    <button type="submit" class="btn btn-dark">Sekretna kombinacja</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <hr class="my-5" />
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Interakcje między postaciami</h3>
+
+                    <div class="d-grid gap-2">
+                        <form method="post" asp-page-handler="Interaction">
+                            <input type="hidden" name="attackerName" value="Kratos" />
+                            <input type="hidden" name="targetName" value="Thor" />
+                            <button type="submit" class="btn btn-outline-danger">Kratos vs Thor</button>
+                        </form>
+
+                        <form method="post" asp-page-handler="Interaction">
+                            <input type="hidden" name="attackerName" value="Thor" />
+                            <input type="hidden" name="targetName" value="Kratos" />
+                            <button type="submit" class="btn btn-outline-primary">Thor vs Kratos</button>
+                        </form>
+
+                        <form method="post" asp-page-handler="Interaction">
+                            <input type="hidden" name="attackerName" value="Atreus" />
+                            <input type="hidden" name="targetName" value="Freya" />
+                            <button type="submit" class="btn btn-outline-success">Atreus vs Freya</button>
+                        </form>
+
+                        <form method="post" asp-page-handler="Interaction">
+                            <input type="hidden" name="attackerName" value="Freya" />
+                            <input type="hidden" name="targetName" value="Atreus" />
+                            <button type="submit" class="btn btn-outline-warning">Freya vs Atreus</button>
+                        </form>
+
+                        <form method="post" asp-page-handler="RttiDemo">
+                            <button type="submit" class="btn btn-info text-white">RTTI Demo</button>
+                        </form>
+
+                        <form method="post" asp-page-handler="Reset">
+                            <button type="submit" class="btn btn-danger">Resetuj system</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Log akcji</h3>
+
+                    @if (Model.Logi.Count == 0)
+                    {
+                        <p class="text-muted">Brak logów.</p>
+                    }
+                    else
+                    {
+                        <ul class="list-group">
+                            @foreach (var log in Model.Logi)
+                            {
+                                <li class="list-group-item">@log</li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
